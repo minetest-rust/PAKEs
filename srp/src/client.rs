@@ -203,6 +203,7 @@ impl<'a, D: Digest> SrpClient<'a, D> {
         let key = self.compute_premaster_secret(&b_pub, &k, &x, &a, &u);
 
         let m1 = compute_m1::<D>(
+            self.params,
             &a_pub.to_bytes_be(),
             &b_pub.to_bytes_be(),
             &key.to_bytes_be(),

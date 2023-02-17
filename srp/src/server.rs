@@ -145,6 +145,7 @@ impl<'a, D: Digest> SrpServer<'a, D> {
         let key = self.compute_premaster_secret(&a_pub, &v, &u, &b);
 
         let m1 = compute_m1::<D>(
+            self.params,
             &a_pub.to_bytes_be(),
             &b_pub.to_bytes_be(),
             &key.to_bytes_be(),
