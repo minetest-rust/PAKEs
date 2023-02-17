@@ -145,13 +145,13 @@ impl<'a, D: Digest> SrpServer<'a, D> {
 
         let mut d = D::new();
         d.update(username);
-        let identity_hash = d.finalize();
+        let username_hash = d.finalize();
 
         let key = self.compute_premaster_secret(&a_pub, &v, &u, &b);
 
         let m1 = compute_m1::<D>(
             self.params,
-            identity_hash.as_slice(),
+            username_hash.as_slice(),
             &a_pub.to_bytes_be(),
             &b_pub.to_bytes_be(),
             &key.to_bytes_be(),

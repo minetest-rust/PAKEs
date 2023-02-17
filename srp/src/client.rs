@@ -200,11 +200,15 @@ impl<'a, D: Digest> SrpClient<'a, D> {
         let identity_hash = Self::compute_identity_hash(username, password);
         let x = Self::compute_x(identity_hash.as_slice(), salt);
 
+        let mut d = D::new();
+        d.update(username);
+        let username_hash = d.finalize();
+
         let key = self.compute_premaster_secret(&b_pub, &k, &x, &a, &u);
 
         let m1 = compute_m1::<D>(
             self.params,
-            identity_hash.as_slice(),
+            username_hash.as_slice(),
             &a_pub.to_bytes_be(),
             &b_pub.to_bytes_be(),
             &key.to_bytes_be(),
