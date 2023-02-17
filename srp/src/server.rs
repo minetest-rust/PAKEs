@@ -121,11 +121,13 @@ impl<'a, D: Digest> SrpServer<'a, D> {
 
     /// Process client reply to the handshake.
     /// b is a random value,
+    /// s is the salt,
     /// v is the provided during initial user registration
     pub fn process_reply(
         &self,
         username: &str,
         b: &[u8],
+        s: &[u8],
         v: &[u8],
         a_pub: &[u8],
     ) -> Result<SrpServerVerifier<D>, SrpAuthError> {
@@ -152,6 +154,7 @@ impl<'a, D: Digest> SrpServer<'a, D> {
         let m1 = compute_m1::<D>(
             self.params,
             username_hash.as_slice(),
+            s,
             &a_pub.to_bytes_be(),
             &b_pub.to_bytes_be(),
             &key.to_bytes_be(),

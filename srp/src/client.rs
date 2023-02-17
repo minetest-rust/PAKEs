@@ -209,6 +209,7 @@ impl<'a, D: Digest> SrpClient<'a, D> {
         let m1 = compute_m1::<D>(
             self.params,
             username_hash.as_slice(),
+            salt,
             &a_pub.to_bytes_be(),
             &b_pub.to_bytes_be(),
             &key.to_bytes_be(),
