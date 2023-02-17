@@ -124,6 +124,7 @@ impl<'a, D: Digest> SrpServer<'a, D> {
     /// v is the provided during initial user registration
     pub fn process_reply(
         &self,
+        username: &str,
         b: &[u8],
         v: &[u8],
         a_pub: &[u8],
@@ -142,10 +143,15 @@ impl<'a, D: Digest> SrpServer<'a, D> {
 
         let u = compute_u::<D>(&a_pub.to_bytes_be(), &b_pub.to_bytes_be());
 
+        let mut d = D::new();
+        d.update(username);
+        let identity_hash = d.finalize();
+
         let key = self.compute_premaster_secret(&a_pub, &v, &u, &b);
 
         let m1 = compute_m1::<D>(
             self.params,
+            identity_hash.as_slice(),
             &a_pub.to_bytes_be(),
             &b_pub.to_bytes_be(),
             &key.to_bytes_be(),

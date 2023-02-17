@@ -28,6 +28,7 @@ pub fn compute_k<D: Digest>(params: &SrpGroup) -> BigUint {
 // M1 = H(H(N) XOR H(g) | H(U) | s | A | B | K)
 pub fn compute_m1<D: Digest>(
     params: &SrpGroup,
+    identity_hash: &[u8],
     a_pub: &[u8],
     b_pub: &[u8],
     key: &[u8],
@@ -44,6 +45,7 @@ pub fn compute_m1<D: Digest>(
 
     let mut d = D::new();
     d.update(ng_xor);
+    d.update(identity_hash);
     d.update(a_pub);
     d.update(b_pub);
     d.update(key);
