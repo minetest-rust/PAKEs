@@ -206,13 +206,17 @@ impl<'a, D: Digest> SrpClient<'a, D> {
 
         let key = self.compute_premaster_secret(&b_pub, &k, &x, &a, &u);
 
+        let mut d = D::new();
+        d.update(key.to_bytes_be());
+        let k_hashed = d.finalize();
+
         let m1 = compute_m1::<D>(
             self.params,
             username_hash.as_slice(),
             salt,
             &a_pub.to_bytes_be(),
             &b_pub.to_bytes_be(),
-            &key.to_bytes_be(),
+            k_hashed.as_slice(),
         );
 
         let m2 = compute_m2::<D>(&a_pub.to_bytes_be(), &m1, &key.to_bytes_be());
